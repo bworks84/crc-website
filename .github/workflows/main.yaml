@@ -8,15 +8,13 @@ jobs:
   deploy:
     runs-on: macos-latest
     steps:
+      - uses: actions/checkout@v1
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          args: --follow-symlinks --delete --exclude '.git*/*'
-        env:
-          aws-region: ap-northeast-1
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1 # Use your bucket region here
 
       - name: Invalidate CloudFront
         uses: chetan/invalidate-cloudfront-action@v2 #straight from github docs
