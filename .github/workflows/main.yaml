@@ -9,9 +9,8 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: bworks84/crc-website@main
-        with:
-          args: --follow-symlinks --delete --exclude '.git*/*'
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
         env:
           SOURCE_DIR: ./
           AWS_REGION: us-northeast-1
