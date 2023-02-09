@@ -3,25 +3,21 @@ on:
   push:
     branches:
       - main #here we choose to deploy only when a push is detected on the main branch
+
 jobs:
-  build:
+  deploy:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - uses: bworks84/crc-website@main
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET }}
-          aws-region: ap-northeast-1
-
-      # Here you could add some building steps if you were dealing with some angular/react/Vue...
-      # - name: Build static site
-      #  run: yarn install && npm run-script build
-      - name: Deploy content to S3 bucket
-        run: aws s3 sync ./crc-website/ ${{ AWS_S3_BUCKET }} --delete
-        # --delete flag will remove any file in the s3 that are not on the "thefoldertodeploy" folder
+          args: --follow-symlinks --delete --exclude '.git*/*'
+        env:
+          SOURCE_DIR: ./
+          AWS_REGION: us-northeast-1
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Invalidate CloudFront
         uses: chetan/invalidate-cloudfront-action@v2 #straight from github docs
